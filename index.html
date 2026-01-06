@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DEEP | Full Stack Developer & UI/UX Designer</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Space Grotesk -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- GSAP for Professional Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#030303',
+                            card: '#0a0a0c',
+                            accent: '#6366f1',
+                            secondary: '#a855f7',
+                            emerald: '#10b981',
+                            muted: '#71717a',
+                            glass: 'rgba(255, 255, 255, 0.02)',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                        heading: ['Space Grotesk', 'sans-serif'],
+                    },
+                    letterSpacing: {
+                        tighter: '-0.05em',
+                        widest: '0.25em',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Base Styles */
+        body {
+            background-color: #030303;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none; /* Hide default cursor for Figma style */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #030303; }
+        ::-webkit-scrollbar-thumb { background: #1e1e24; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+
+        /* Figma Style Cursor */
+        #figma-cursor {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 9999;
+            display: flex;
+            align-items: flex-start;
+            gap: 2px;
+            mix-blend-mode: normal;
+        }
+
+        .cursor-label {
+            background: #6366f1;
+            color: white;
+            padding: 2px 8px;
+            font-size: 12px;
+            font-weight: 800;
+            border-radius: 0 8px 8px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+
+        /* Typography Text-Gradients */
+        .text-gradient {
+            background: linear-gradient(to right, #6366f1, #a855f7, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-outline {
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+            color: transparent;
+        }
+
+        /* Glassmorphism Classes */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(99, 102, 241, 0.4);
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 20px 40px -20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Animation States */
+        .slide-left { opacity: 0; transform: translateX(-100px); }
+        .slide-right { opacity: 0; transform: translateX(100px); }
+        .fade-up { opacity: 0; transform: translateY(40px); }
+        .stagger-item { opacity: 0; transform: scale(0.9); }
+
+        /* Interactive Typography Elements */
+        .link-hover {
+            position: relative;
+            display: inline-block;
+        }
+        .link-hover::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #6366f1;
+            transition: width 0.3s ease;
+        }
+        .link-hover:hover::after {
+            width: 100%;
+        }
+
+        /* Marquee Styles */
+        .marquee {
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        .marquee-content {
+            display: inline-block;
+            animation: marquee 30s linear infinite;
+        }
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Decorative Background Text */
+        .bg-text {
+            position: absolute;
+            font-size: 20vw;
+            font-weight: 900;
+            opacity: 0.02;
+            white-space: nowrap;
+            pointer-events: none;
+            z-index: -1;
+            user-select: none;
+        }
+
+        /* Custom Grid Overlay */
+        .grid-overlay {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Timeline Styles */
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 5px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #6366f1;
+            box-shadow: 0 0 10px #6366f1;
+        }
+
+        /* Parallax Background text */
+        .parallax-text {
+            will-change: transform;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased grid-overlay">
+
+    <!-- Figma Style Cursor -->
+    <div id="figma-cursor">
+        <svg width="40" height="40" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4.5 3L13.5 9L9.75 10.125L8.625 13.875L4.5 3Z" fill="#6366f1" stroke="white" stroke-width="1.5" stroke-linejoin="round"/>
+        </svg>
+        <span class="cursor-label">Deep</span>
+    </div>
+
+    <!-- Global Background Elements -->
+    <div class="fixed inset-0 pointer-events-none -z-10">
+        <div class="absolute top-0 right-0 w-[800px] h-[800px] bg-indigo-900/10 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-0 left-0 w-[600px] h-[600px] bg-purple-900/10 blur-[120px] rounded-full"></div>
+    </div>
+
+    <!-- Header Navigation -->
+    <nav class="fixed top-0 left-0 w-full z-[100] transition-all duration-500 py-8 px-6 md:px-12" id="main-nav">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <a href="#" class="group flex items-center gap-3">
+                    <span class="w-10 h-10 flex items-center justify-center font-heading font-black text-xl bg-white text-black rounded-lg transition-transform group-hover:rotate-12">D</span>
+                    <span class="font-heading font-black tracking-widest text-lg">DEEP.</span>
+                </a>
+            </div>
+
+            <div class="hidden lg:flex items-center gap-8">
+                <a href="#about" class="text-[scale-105] font-bold uppercase tracking-widest text-brand-muted hover:text-white transition-colors">Manifesto</a>
+                <a href="#experience" class="text-[15px] font-bold uppercase tracking-widest text-brand-muted hover:text-white transition-colors">Journey</a>
+                <a href="#lab" class="text-[15px] font-bold uppercase tracking-widest text-brand-muted hover:text-white transition-colors">Laboratory</a>
+                <a href="#skills" class="text-[15px] font-bold uppercase tracking-widest text-brand-muted hover:text-white transition-colors">Stack</a>
+                <a href="#portfolio" class="text-[15px] font-bold uppercase tracking-widest text-brand-muted hover:text-white transition-colors">Archives</a>
+                <a href="#pricing" class="text-[15px] font-bold uppercase tracking-widest text-brand-muted hover:text-white transition-colors">Investment</a>
+                <a href="#contact" class="px-8 py-3 bg-white text-black text-[15px] font-black uppercase tracking-widest rounded-full hover:bg-brand-accent hover:text-white transition-all">Collaborate</a>
+            </div>
+
+            <!-- Mobile Burger -->
+            <button class="lg:hidden flex flex-col gap-1.5" id="nav-toggle">
+                <span class="w-8 h-0.5 bg-white"></span>
+                <span class="w-5 h-0.5 bg-brand-accent ml-auto"></span>
+                <span class="w-8 h-0.5 bg-white"></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="min-h-screen flex flex-col justify-center relative overflow-hidden pt-20" id="hero">
+        <div class="bg-text top-1/4 left-0 parallax-text" data-speed="-1">DEVELOPER</div>
+        <div class="bg-text bottom-1/4 right-0 parallax-text" data-speed="1">DESIGNER</div>
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="max-w-7xl">
+                <div class="fade-up mb-6">
+                    <span class="px-4 py-2 rounded-full border border-white/10 text-[10px] font-black tracking-widest uppercase text-brand-accent">Bespoke Full Stack &bull; UI/UX &bull; Motion Engineering</span>
+                </div>
+                
+                <h1 class="text-6xl md:text-[13rem] font-heading font-black leading-[0.8] tracking-tighter mb-20">
+                    <span class="block slide-left">DEEP.</span>
+                    <span class="block text-gradient slide-right">PURE DIGITAL</span>
+                    <span class="block slide-left italic text-outline">EXCELLENCE.</span>
+                </h1>
+
+                <div class="grid lg:grid-cols-12 gap-12 items-end">
+                    <div class="lg:col-span-8 fade-up" style="transition-delay: 0.4s">
+                        <p class="text-3xl md:text-4xl text-brand-muted leading-tight font-light mb-10">
+                            Engineering from <span class="text-white font-medium underline decoration-brand-accent decoration-2 underline-offset-8">Gwalior, India</span>. I synthesize technical complexity into <span class="text-white">Radical Simplicity</span> using the modern web stack.
+                        </p>
+                        <p class="text-brand-muted text-base max-w xl leading-relaxed">
+                            Currently exploring the frontiers of serverless edge computing and generative UI systems. I help visionary founders transform abstract concepts into production-ready platforms that scale beyond millions.
+                        </p>
+                    </div>
+                    <div class="lg:col-span-4 flex flex-col md:flex-row gap-6 lg:justify-end fade-up" style="transition-delay: 0.6s">
+                        <a href="#portfolio" class="px-14 py-7 bg-brand-accent text-white font-black text-xs uppercase tracking-widest rounded-2xl text-center group relative overflow-hidden transition-all hover:scale-105 shadow-[0_20px_40px_-15px_rgba(99,102,241,0.5)]">
+                            <span class="relative z-10">The Archives <span class="inline-block transition-transform group-hover:translate-x-3">→</span></span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Marquee -->
+    <div class="py-16 border-y border-white/5 bg-brand-card/20 marquee">
+        <div class="marquee-content text-5xl md:text-8xl font-heading font-black uppercase tracking-tighter opacity-10">
+            <span>&nbsp; Next.js 14 &bull; TypeScript &bull; Node.js &bull; GSAP &bull; PostgreSQL &bull; Docker &bull; AWS &bull; Figma &bull; Framer Motion &bull; Next.js 14 &bull; TypeScript &bull; Node.js &bull; GSAP &bull; PostgreSQL &bull; Docker &bull; AWS &bull; Figma &bull; Framer Motion &bull; </span>
+        </div>
+    </div>
+
+    <!-- About / Manifesto Section -->
+    <section id="about" class="py-48 relative">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid lg:grid-cols-12 gap-32">
+                <div class="lg:col-span-5 slide-left">
+                    <div class="sticky top-40 space-y-12">
+                        <h2 class="text-xl font-black uppercase tracking-widest text-brand-accent">01 // THE MANIFESTO</h2>
+                        <h3 class="text-7xl md:text-9xl font-heading font-bold leading-none">Deep <br> <span class="italic text-brand-muted">Logic</span> <br> Systems.</h3>
+                        <p class="text-brand-muted text-xl leading-relaxed max-w-md">I believe that the best code is invisible. A user should never wonder how a platform works; they should simply feel that it does.</p>
+                        
+                        <!-- Design Matrix -->
+                        <div class="grid grid-cols-1 gap-10 pt-16">
+                            <div class="space-y-4 group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-[1px] bg-brand-accent"></div>
+                                    <h2 class="text-sm font-black uppercase tracking-widest group-hover:text-brand-accent transition-colors">Performance as UX</h2>
+                                </div>
+                                <p class="text-xl text-brand-muted leading-relaxed">Latency is a design flaw. I prioritize Time-to-Interactive (TTI) above all else, ensuring that the interface responds faster than the human eye can blink.</p>
+                            </div>
+                            <div class="space-y-4 group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-[1px] bg-brand-secondary"></div>
+                                    <h2 class="text-sm font-black uppercase tracking-widest group-hover:text-brand-secondary transition-colors">Typographic Soul</h2>
+                                </div>
+                                <p class="text-xl text-brand-muted leading-relaxed">The web is 95% typography. I treat characters as architectural elements, using grid-based alignment and fluid scales to create visual harmony.</p>
+                            </div>
+                            <div class="space-y-4 group">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-[10px] bg-brand-emerald"></div>
+                                    <h4 class="text-sm font-black uppercase tracking-widest group-hover:text-brand-emerald transition-colors">Modular Scaling</h4>
+                                </div>
+                                <p class="text-xl text-brand-muted leading-relaxed">I build "Atomic Systems." Components are small, testable, and reusable, allowing a codebase to grow from a single page to a global enterprise without technical debt.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-7 space-y-32 slide-right">
+                    <div class="space-y-12">
+                        <p class="text-4xl md:text-5xl text-brand-muted leading-tight font-light">
+                            Synthesizing <span class="text-white font-bold">Heritage</span> with <span class="text-white font-bold">Innovation</span>.
+                        </p>
+                        <p class="text-2xl text-brand-muted leading-relaxed">
+                            Growing up in <span class="text-white underline underline-offset-8 decoration-brand-accent">Gwalior</span>, surrounded by the geometric perfection of the Gwalior Fort and its intricate stone carvings, I developed an early obsession with symmetry and structure. This historic perspective now informs every digital system I architect.
+                        </p>
+                        <p class="text-xl text-brand-muted leading-relaxed">
+                            I specialize in the <span class="text-white">Next.js Ecosystem</span>, utilizing React Server Components (RSC) to minimize client-side bundles. My methodology focuses on <span class="italic font-medium">Deterministic Interface Engineering</span>—ensuring that every state transition is predictable and every user journey is optimized for zero friction.
+                        </p>
+                    </div>
+
+                    <!-- Core Expertise Grid -->
+                    <div class="grid md:grid-cols-2 gap-px bg-white/5 border border-white/5">
+                        <div class="p-12 bg-brand-dark space-y-6">
+                            <h4 class="text-2xl font-bold italic">The Developer.</h4>
+                            <p class="text-brand-muted text-xl leading-relaxed">
+                                Expert in TypeScript and asynchronous patterns. I build robust APIs that handle concurrency with ease, utilizing PostgreSQL and Redis for low-latency data persistence and real-time synchronization.
+                            </p>
+                        </div>
+                        <div class="p-12 bg-brand-dark space-y-6">
+                            <h4 class="text-2xl font-bold italic">The Designer.</h4>
+                            <p class="text-brand-muted text-xl leading-relaxed">
+                                I design in the browser. Using Figma for high-level concepts and Tailwind CSS for implementation, I create design systems that are responsive by nature and beautiful by design.
+                            </p>
+                        </div>
+                        <div class="p-12 bg-brand-dark space-y-6">
+                            <h4 class="text-2xl font-bold italic">The Strategist.</h4>
+                            <p class="text-brand-muted text-xl leading-relaxed">
+                                I help founders navigate the "Technical Valley of Death." From selecting the right CI/CD pipeline to optimizing Vercel edge configs, I ensure your tech stack is a growth catalyst.
+                            </p>
+                        </div>
+                        <div class="p-12 bg-brand-dark space-y-6">
+                            <h4 class="text-2xl font-bold italic">The Optimizer.</h4>
+                            <p class="text-brand-muted text-xl leading-relaxed">
+                                SEO and Accessibility are not afterthoughts. I guarantee 100/100 Lighthouse scores, ensuring your brand is discoverable and usable by everyone on any device.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Metrics Section -->
+                    <div class="bg-brand-card p-16 rounded-[4rem] border border-white/5 relative overflow-hidden">
+                        <div class="absolute -top-20 -left-20 w-80 h-80 bg-brand-accent/5 rounded-full blur-[100px]"></div>
+                        <h4 class="text-[10px] font-black uppercase tracking-[0.5em] text-brand-muted mb-12">The Efficiency Ledger</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-16">
+                            <div class="space-y-2">
+                                <span class="block text-5xl font-black font-heading text-brand-accent">0.3s</span>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Avg. Page Load</span>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="block text-5xl font-black font-heading text-brand-secondary">100%</span>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Static Typing</span>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="block text-5xl font-black font-heading text-brand-emerald">0ms</span>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Hydration Lag</span>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="block text-5xl font-black font-heading">50+</span>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Bespoke Builds</span>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="block text-5xl font-black font-heading">12k+</span>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Commits Made</span>
+                            </div>
+                            <div class="space-y-2">
+                                <span class="block text-5xl font-black font-heading text-gradient">∞</span>
+                                <span class="text-[10px] uppercase tracking-widest text-brand-muted font-bold">Dedication</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Professional Journey Section -->
+    <section id="experience" class="py-48 bg-[#050505]">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="max-w-5xl mx-auto mb-32 slide-left">
+                <h2 class="text-xl font-black uppercase tracking-widest text-brand-muted mb-6">02 // THE CHRONICLE</h2>
+                <h3 class="text-6xl md:text-9xl font-heading font-black leading-none mb-12 italic">The Path to <br> <span class="text-brand-accent not-italic">Mastery.</span></h3>
+                <p class="text-brand-muted text-xl max-w-2xl leading-relaxed">Over the past five years, my career has evolved through distinct technical eras, each defined by a deep-dive into specific architectural patterns.</p>
+            </div>
+
+            <div class="max-w-4xl mx-auto border-l-2 border-white/5 pl-12 space-y-32 relative">
+                <!-- Epoch 2024 -->
+                <div class="timeline-dot slide-left relative">
+                    <span class="text-brand-accent text- font-black uppercase tracking-[0.3em] mb-4 block">Era of Complexity // 2024 - Present</span>
+                    <h4 class="text-4xl font-heading font-bold mb-6">Self-Employed | Remote</h4>
+                    <p class="text-brand-muted leading-relaxed text-2xl mb-8">Working as a Freelance Full-Stack Developer, building responsive web applications and client projects using modern frontend and backend technologies.</p>
+                    <div class="flex flex-wrap gap-3 opacity-40">
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Next.js 15</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Prisma</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Tiptap</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Zustand</span>
+                    </div>
+                </div>
+
+                <!-- Epoch 2022 -->
+                <div class="timeline-dot slide-left relative" style="transition-delay: 0.1s">
+                    <span class="text-brand-secondary text- font-black uppercase tracking-[0.3em] mb-4 block">Era of Scale // 2022 - 2023</span>
+                    <h4 class="text-4xl font-heading font-bold mb-6">Senior Full-Stack Architect</h4>
+                    <p class="text-brand-muted leading-relaxed text-2xl mb-8">Joined a rapid-growth fintech venture as the lead for the dashboard ecosystem. I refactored a legacy React codebase into a modular Micro-Frontend architecture, improving developer velocity by 200%. During this time, I mastered high-concurrency Node.js patterns and distributed Redis caching.</p>
+                    <div class="flex flex-wrap gap-3 opacity-40">
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Redux Toolkit</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Go</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Docker</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Redis</span>
+                    </div>
+                </div>
+
+                <!-- Epoch 2020 -->
+                <div class="timeline-dot slide-left relative" style="transition-delay: 0.2s">
+                    <span class="text-brand-emerald text- font-black uppercase tracking-[0.3em] mb-4 block">Era of Creative Code // 2020 - 2021</span>
+                    <h4 class="text-4xl font-heading font-bold mb-6">Creative Interface Developer</h4>
+                    <p class="text-brand-muted leading-relaxed text-2xl mb-8">Worked with boutique digital agencies in Delhi and Mumbai. This was the period where I became obsessed with GSAP and Three.js. I built 15+ award-winning landing pages that pushed the boundaries of scroll-based narrative design and WebGL immersion.</p>
+                    <div class="flex flex-wrap gap-3 opacity-40">
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Three.js</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">GSAP</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">Framer</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">SASS</span>
+                    </div>
+                </div>
+
+                <!-- Epoch 2019 -->
+                <div class="timeline-dot slide-left relative" style="transition-delay: 0.3s">
+                    <span class="text-zinc-600 text- font-black uppercase tracking-[0.3em] mb-4 block">The Genesis // 2019</span>
+                    <h4 class="text-4xl font-heading font-bold mb-6">Freelance UI Pioneer</h4>
+                    <p class="text-brand-muted leading-relaxed text-2xl mb-8">The start of it all in Gwalior. Armed with a budget laptop and a burning curiosity, I began hand-coding themes for local businesses. This early period taught me the value of direct client impact and the absolute necessity of semantic HTML and responsive foundations.</p>
+                    <div class="flex flex-wrap gap-3 opacity-40">
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">PHP</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">jQuery</span>
+                        <span class="px-3 py-1 border border-white/20 text- rounded-full">CSS Grid</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Laboratory Section (New Content) -->
+    <section id="lab" class="py-48 relative overflow-hidden">
+        <div class="bg-text top-10 right-0 parallax-text" data-speed="0.5">EXPERIMENTS</div>
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-32 slide-left">
+                <h2 class="text-xl font-black uppercase tracking-widest text-brand-emerald mb-6">03 // THE LABORATORY</h2>
+                <h3 class="text-6xl md:text-8xl font-heading font-bold">Unpublished <br> Research.</h3>
+                <p class="text-brand-muted mt-8 max-w-3xl mx-auto italic">A collection of technical proofs-of-concept and side projects where I push the limits of modern web APIs.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-12">
+                <!-- Experiment 1 -->
+                <div class="glass-card p-12 rounded-[3.5rem] group slide-left">
+                    <div class="flex justify-between items-start mb-12">
+                        <div class="w-16 h-16 bg-brand-accent/10 rounded-2xl flex items-center justify-center text-brand-accent">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10"/><path d="M18.4 4.6a10 10 0 1 1-12.8 0"/></svg>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-brand-muted border border-white/10 px-12 py-1 rounded-full">In Progress</span>
+                    </div>
+                    <h4 class="text-3xl font-heading font-bold mb-6 group-hover:text-brand-accent transition-colors italic">DeepFlux Graph Engine</h4>
+                    <p class="text-brand-muted leading-relaxed mb-10">A custom-built WebGL visualization engine for complex relational data. It utilizes GPU instancing to render over 100,000 nodes at a steady 60FPS. I built this to solve the problem of visual hierarchy in massive cloud infrastructure maps.</p>
+                    <div class="flex gap-4">
+                        <span class="text- font-bold text-white/40">GLSL</span>
+                        <span class="text- font-bold text-white/40">Zustand</span>
+                        <span class="text- font-bold text-white/40">WebWorkers</span>
+                    </div>
+                </div>
+
+                <!-- Experiment 2 -->
+                <div class="glass-card p-12 rounded-[3.5rem] group slide-right">
+                    <div class="flex justify-between items-start mb-12">
+                        <div class="w-16 h-16 bg-brand-emerald/10 rounded-2xl flex items-center justify-center text-brand-emerald">
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                        <span class="text-[10px] font-black uppercase tracking-widest text-brand-muted border border-white/10 px-4 py-1 rounded-full">Experimental</span>
+                    </div>
+                    <h4 class="text-3xl font-heading font-bold mb-6 group-hover:text-brand-emerald transition-colors italic">Synapse Real-time DB</h4>
+                    <p class="text-brand-muted leading-relaxed mb-10">Exploring Conflict-free Replicated Data Types (CRDTs) to build a collaborative editor that works completely offline. It syncs changes via Peer-to-Peer WebRTC when a connection is re-established, bypassing centralized servers.</p>
+                    <div class="flex gap-4">
+                        <span class="text- font-bold text-white/40">Yjs</span>
+                        <span class="text- font-bold text-white/40">WebRTC</span>
+                        <span class="text- font-bold text-white/40">IndexedDB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed Tech Stack Matrix (More Content) -->
+    <section id="skills" class="py-48">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-32 gap-8 slide-left">
+                <div class="max-w-2xl">
+                    <h2 class="text-1xl font-black uppercase tracking-widest text-brand-accent mb-6">04 // ARSENAL</h2>
+                    <h3 class="text-6xl md:text-9xl font-heading font-black leading-none">The Technical <br> Foundation.</h3>
+                </div>
+                <div class="max-w-xs text-brand-muted italic md:text-right">A curated selection of tools I have mastered to deliver enterprise-grade digital products.</div>
+            </div>
+
+            <!-- Staggered Tech Grid -->
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-px bg-white/5 border border-white/5">
+                <!-- Tech 1 -->
+                <div class="p-10 bg-brand-dark group hover:bg-brand-accent transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">01</div>
+                    <h5 class="text-xl font-bold mb-2 group-hover:text-white">React / Next</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Master of hydration & SSR</p>
+                </div>
+                <!-- Tech 2 -->
+                <div class="p-10 bg-brand-dark group hover:bg-brand-secondary transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">02</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">TypeScript</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Architect of type-safety</p>
+                </div>
+                <!-- Tech 3 -->
+                <div class="p-10 bg-brand-dark group hover:bg-brand-emerald transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">03</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">PostgreSQL</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Guardian of persistence</p>
+                </div>
+                <!-- Tech 4 -->
+                <div class="p-10 bg-brand-dark group hover:bg-brand-accent transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">04</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">Node.js</h5>
+                    <p class="text-1xl text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Concurrency & Runtime</p>
+                </div>
+                <!-- Tech 5 -->
+                <div class="p-10 bg-brand-dark group hover:bg-pink-500 transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">05</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">GSAP</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Master of Kinetics</p>
+                </div>
+                <!-- Tech 6 -->
+                <div class="p-10 bg-brand-dark group hover:bg-indigo-600 transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">06</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">Prisma / ORM</h5>
+                    <p class="text-xs text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Data Orchestration</p>
+                </div>
+                <!-- Tech 7 -->
+                <div class="p-10 bg-brand-dark group hover:bg-brand-secondary transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">07</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">Tailwind</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Atomic Styling</p>
+                </div>
+                <!-- Tech 8 -->
+                <div class="p-10 bg-brand-dark group hover:bg-orange-500 transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">08</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">Figma</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">High-Fi Prototyping</p>
+                </div>
+                <!-- Tech 9 -->
+                <div class="p-10 bg-brand-dark group hover:bg-blue-400 transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">09</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">Redis</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">In-Memory Caching</p>
+                </div>
+                <!-- Tech 10 -->
+                <div class="p-10 bg-brand-dark group hover:bg-yellow-600 transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">10</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">AWS</h5>
+                    <p class="text-xs text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Global Infrastructure</p>
+                </div>
+                <!-- Tech 11 -->
+                <div class="p-10 bg-brand-dark group hover:bg-brand-accent transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">11</div>
+                    <h5 class="text-xl font-bold mb-2 group-hover:text-white">GraphQL</h5>
+                    <p class="text- text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Declarative Fetching</p>
+                </div>
+                <!-- Tech 12 -->
+                <div class="p-10 bg-brand-dark group hover:bg-emerald-600 transition-all duration-500 stagger-item">
+                    <div class="text-2xl font-black font-heading mb-4 group-hover:scale-110 transition-transform">12</div>
+                    <h5 class="text-2xl font-bold mb-2 group-hover:text-white">Docker</h5>
+                    <p class="text-xs text-brand-muted group-hover:text-white/60 leading-relaxed uppercase tracking-widest">Containerization</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Global Collaboration (More Content) -->
+    <section class="py-48 bg-[#020202]">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid lg:grid-cols-2 gap-24 items-center">
+                <div class="slide-left">
+                    <h2 class="text-1xl font-black uppercase tracking-widest text-brand-accent mb-8">05 // GLOBAL OUTREACH</h2>
+                    <h3 class="text-6xl font-heading font-black leading-none mb-10">Architecting Across <br> <span class="italic text-brand-muted">Timezones.</span></h3>
+                    <p class="text-brand-muted text-lg leading-relaxed mb-12">Based in Gwalior (UTC +5:30), I have built a seamless asynchronous workflow that allows me to collaborate effectively with founders in San Francisco, London, Berlin, and Singapore. I value deep-focus hours and transparent documentation as the pillars of remote excellence.</p>
+                    
+                    <div class="space-y-8">
+                        <div class="flex items-center gap-6 p-6 glass-card rounded-2xl">
+                            <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-brand-accent">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            </div>
+                            <div>
+                                <h2 class="font-bold">Asynchronous Mastery</h2>
+                                <p class="text- text-brand-muted uppercase tracking-widest mt-1">Loom / Slack / Notion Focused</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-6 p-6 glass-card rounded-2xl">
+                            <div class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center text-brand-secondary">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
+                            </div>
+                            <div>
+                                <h4 class="font-bold">Global Perspective</h4>
+                                <p class="text- text-brand-muted uppercase tracking-widest mt-1">4+ Countries Served</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8 slide-right">
+                    <div class="p-12 glass-card rounded-[3rem] text-center border-brand-accent/20">
+                        <span class="block text-4xl font-black font-heading mb-2">USA</span>
+                        <span class="text- text-brand-muted uppercase tracking-widest">PST / EST</span>
+                    </div>
+                    <div class="p-12 glass-card rounded-[3rem] text-center border-brand-secondary/20">
+                        <span class="block text-4xl font-black font-heading mb-2">UK</span>
+                        <span class="text- text-brand-muted uppercase tracking-widest">GMT</span>
+                    </div>
+                    <div class="p-12 glass-card rounded-[3rem] text-center border-brand-emerald/20">
+                        <span class="block text-4xl font-black font-heading mb-2">EU</span>
+                        <span class="text- text-brand-muted uppercase tracking-widest">CET</span>
+                    </div>
+                    <div class="p-12 glass-card rounded-[3rem] text-center border-pink-500/20">
+                        <span class="block text-4xl font-black font-heading mb-2">SEA</span>
+                        <span class="text- text-brand-muted uppercase tracking-widest">SGT</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Deep Dive (More Content) -->
+    <section id="services" class="py-48">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-32 gap-8 slide-left">
+                <div class="max-w-2xl">
+                    <h2 class="text-xl font-black uppercase tracking-widest text-brand-accent mb-6">06 // OFFERINGS</h2>
+                    <h3 class="text-6xl md:text-8xl font-heading font-black leading-none">The Service <br> Suite.</h3>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-px bg-white/5 border border-white/5">
+                <!-- Service 1 -->
+                <div class="p-20 bg-brand-dark group slide-left">
+                    <span class="text- font-black text-brand-muted tracking-[0.4em] mb-12 block uppercase">01 / Full-Stack Engineering</span>
+                    <h4 class="text-4xl md:text-5xl font-heading font-bold mb-8 group-hover:text-brand-accent transition-all duration-500 group-hover:translate-x-4">Digital Product <br> Architecture.</h4>
+                    <p class="text-brand-muted leading-relaxed mb-12 text-xl">I build the complete nervous system of your digital brand. From secure serverless functions to high-fidelity interfaces, I ensure your product is fast, secure, and ready for scale.</p>
+                    <div class="grid grid-cols-2 gap-6 text-[11px] font-bold uppercase tracking-widest text-brand-muted">
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Next.js Optimization</span>
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> API Orchestration</span>
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Database Design</span>
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Auth Systems</span>
+                    </div>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="p-20 bg-brand-dark group slide-right">
+                    <span class="text- font-black text-brand-muted tracking-[0.4em] mb-12 block uppercase">02 / UI/UX Systems</span>
+                    <h4 class="text-4xl md:text-5xl font-heading font-bold mb-8 group-hover:text-brand-secondary transition-all duration-500 group-hover:translate-x-4">Kinetic Design <br> Languages.</h4>
+                    <p class="text-brand-muted leading-relaxed mb-12 text-xl">Design is not static. I create "living" interfaces where motion provides feedback and guides the user journey, resulting in higher engagement and conversion rates.</p>
+                    <div class="grid grid-cols-2 gap-6 text-[11px] font-bold uppercase tracking-widest text-brand-muted">
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-secondary rounded-full"></div> Design Systems</span>
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-secondary rounded-full"></div> GSAP Animations</span>
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-secondary rounded-full"></div> Micro-Interactions</span>
+                        <span class="flex items-center gap-2"><div class="w-1.5 h-1.5 bg-brand-secondary rounded-full"></div> Prototyping</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing / Investment Section -->
+    <section id="pricing" class="py-48 bg-[#020202]">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-32 slide-left">
+                <h2 class="text-xl font-black uppercase tracking-widest text-brand-accent mb-6">07 // INVESTMENT</h2>
+                <h3 class="text-6xl md:text-9xl font-heading font-black leading-none">Value-Based <br> <span class="text-brand-muted italic">Tiers.</span></h3>
+                <p class="text-brand-muted max-w-xl mx-auto mt-8 italic text-xl leading-relaxed">No hourly bloat. No hidden fees. Just transparent, result-oriented investment levels for brands that demand excellence.</p>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-10 items-stretch mb-32">
+                <!-- Essential -->
+                <div class="price-card p-16 glass-card rounded-[4rem] flex flex-col slide-left">
+                    <h4 class="text-xl font-bold mb-4 italic">Essential</h4>
+                    <div class="text-5xl font-heading font-black mb-12 text-brand-muted">15000INR+</div>
+                    <div class="space-y-6 flex-grow mb-16 border-t border-white/5 pt-10">
+                        <p class="text-brand-muted text-xl leading-relaxed">Optimized for high-impact landing pages and personal branding.</p>
+                        <ul class="space-y-5">
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> 3 Custom Sections</li>
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Next.js 14 Build</li>
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> SEO Optimizations</li>
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Mobile Fluidity</li>
+                        </ul>
+                    </div>
+                    <a href="#contact" class="py-6 text-center border border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">Start Project</a>
+                </div>
+
+                <!-- Professional -->
+                <div class="price-card p-16 bg-white text-black rounded-[4rem] flex flex-col scale-105 shadow-[0_50px_100px_-20px_rgba(99,102,241,0.3)] fade-up">
+                    <span class="px-6 py-2 bg-brand-accent text-white rounded-full text-[10px] font-black tracking-widest uppercase self-start mb-10">Most Popular</span>
+                    <h4 class="text-3xl font-bold mb-4 italic">Professional</h4>
+                    <div class="text-6xl font-heading font-black mb-12">35000INR+</div>
+                    <div class="space-y-6 flex-grow mb-16 border-t border-black/5 pt-10">
+                        <p class="text-zinc-600 text-xl leading-relaxed font-medium">For established startups scaling their digital presence and conversion.</p>
+                        <ul class="space-y-5">
+                            <li class="text-xl font-black uppercase tracking-widest text-zinc-800 flex items-center gap-4"><div class="w-2 h-2 bg-brand-accent rounded-full"></div> Dynamic CMS Build</li>
+                            <li class="text-xl font-black uppercase tracking-widest text-zinc-800 flex items-center gap-4"><div class="w-2 h-2 bg-brand-accent rounded-full"></div> Custom Motion Design</li>
+                            <li class="text-xl font-black uppercase tracking-widest text-zinc-800 flex items-center gap-4"><div class="w-2 h-2 bg-brand-accent rounded-full"></div> Advanced Animations</li>
+                            <li class="text-xl font-black uppercase tracking-widest text-zinc-800 flex items-center gap-4"><div class="w-2 h-2 bg-brand-accent rounded-full"></div> Full Design System</li>
+                            <li class="text-xl font-black uppercase tracking-widest text-zinc-800 flex items-center gap-4"><div class="w-2 h-2 bg-brand-accent rounded-full"></div> Priority Support</li>
+                        </ul>
+                    </div>
+                    <a href="#contact" class="py-7 text-center bg-black text-white rounded-2xl font-black text-[11px] uppercase tracking-widest hover:bg-brand-accent transition-all">Select Tier</a>
+                </div>
+
+                <!-- Bespoke -->
+                <div class="price-card p-16 glass-card rounded-[4rem] flex flex-col slide-right">
+                    <h4 class="text-3xl font-bold mb-4 italic">Bespoke</h4>
+                    <div class="text-5xl font-heading font-black mb-12 text-brand-muted">55000INR+</div>
+                    <div class="space-y-6 flex-grow mb-16 border-t border-white/5 pt-10">
+                        <p class="text-brand-muted text-xl leading-relaxed">Full-stack engineering for complex SaaS and Fintech platforms.</p>
+                        <ul class="space-y-5">
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Complete MERN Stack</li>
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Real-time Systems</li>
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> AWS Infrastructure</li>
+                            <li class="text-xl font-bold uppercase tracking-widest text-brand-muted flex items-center gap-4"><div class="w-1.5 h-1.5 bg-brand-accent rounded-full"></div> Security Hardening</li>
+                        </ul>
+                    </div>
+                    <a href="#contact" class="py-6 text-center border border-white/10 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-white hover:text-black transition-all">Inquire Now</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Studies / Archives (More Content) -->
+    <section id="portfolio" class="py-48">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="mb-32 slide-left">
+                <h2 class="text-xl font-black uppercase tracking-widest text-brand-accent mb-6">08 // THE ARCHIVES</h2>
+                <h3 class="text-6xl md:text-9xl font-heading font-black leading-none">Strategic <br> Outcomes.</h3>
+                <p class="text-brand-muted mt-8 max-w-lg leading-relaxed text-xl">Every project is a testimony to technical rigor and aesthetic commitment. No placeholders—only production-grade engineering.</p>
+            </div>
+
+            <div class="space-y-px border-t border-white/10">
+                <!-- Entry 1 -->
+                <div class="group py-24 border-b border-white/10 hover:bg-white/[0.02] transition-colors px-6 slide-left">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-16">
+                        <div class="max-w-4xl space-y-8">
+                            <span class="text-xl font-black uppercase tracking-[0.4em] text-brand-accent">E-Commerce // Next.js + Stripe</span>
+                            <h4 class="text-5xl md:text-8xl font-heading font-black group-hover:italic transition-all duration-500">LuxeVibe. <span class="text-sm font-normal text-brand-muted opacity-30 tracking-normal">(2023)</span></h4>
+                            <p class="text-xl text-brand-muted leading-relaxed">Redefined the digital presence for a premium European fashion house. We integrated a headless commerce architecture that reduced site weight by 70%, resulting in a 45% uplift in mobile session duration. I built a custom GLSL shader for the background to match the brand's aesthetic.</p>
+                        </div>
+                        <div class="flex flex-col items-start lg:items-end gap-12">
+                            <div class="flex gap-6">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-black font-heading">0.4s</span>
+                                    <span class="text-[9px] text-brand-muted uppercase tracking-widest">LCP Speed</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-3xl font-black font-heading">+45%</span>
+                                    <span class="text-[9px] text-brand-muted uppercase tracking-widest">Conversion</span>
+                                </div>
+                            </div>
+                            <a href="#" class="text-[10px] font-black uppercase tracking-[0.4em] border-b-2 border-brand-accent pb-2">Full Case Study</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Entry 2 -->
+                <div class="group py-24 border-b border-white/10 hover:bg-white/[0.02] transition-colors px-6 slide-right">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-16">
+                        <div class="max-w-4xl space-y-8">
+                            <span class="text-xl font-black uppercase tracking-[0.4em] text-brand-secondary">FinTech // React + Node + Redis</span>
+                            <h4 class="text-5xl md:text-8xl font-heading font-black group-hover:italic transition-all duration-500">ZenithNode. <span class="text-sm font-normal text-brand-muted opacity-30 tracking-normal">(2022)</span></h4>
+                            <p class="text-xl text-brand-muted leading-relaxed">Built a real-time analytics dashboard for a crypto-liquidity provider. The challenge was visualizing complex datasets without compromising on smoothness. We utilized optimized Canvas rendering to achieve 60FPS interactions even under heavy load.</p>
+                        </div>
+                        <div class="flex flex-col items-start lg:items-end gap-12">
+                            <div class="flex gap-6">
+                                <div class="text-center">
+                                    <span class="block text-3xl font-black font-heading">Real-T</span>
+                                    <span class="text-[9px] text-brand-muted uppercase tracking-widest">Update Cycle</span>
+                                </div>
+                                <div class="text-center">
+                                    <span class="block text-3xl font-black font-heading">60FPS</span>
+                                    <span class="text-[9px] text-brand-muted uppercase tracking-widest">Interaction</span>
+                                </div>
+                            </div>
+                            <a href="#" class="text-[10px] font-black uppercase tracking-[0.4em] border-b-2 border-brand-secondary pb-2">Technical Deep Dive</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-48 bg-[#050505] overflow-hidden">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid lg:grid-cols-2 gap-32 items-center">
+                <div class="slide-left">
+                    <h2 class="text- font-black uppercase tracking-widest text-brand-accent mb-8">09 // FEEDBACK</h2>
+                    <h3 class="text-6xl md:text-8xl font-heading font-black mb-12 leading-none">Collaborative <br> Proof.</h3>
+                    <p class="text-brand-muted text-xl mb-16 leading-relaxed">Long-term partnerships are built on reliability and technical integrity. Here’s what my global collaborators have to say about our synergy.</p>
+                    <div class="flex gap-12 border-t border-white/10 pt-16">
+                        <div>
+                            <span class="block text-5xl font-black font-heading text-brand-accent">20+</span>
+                            <span class="text-[10px] uppercase tracking-[0.3em] text-brand-muted">Retained Founders</span>
+                        </div>
+                        <div>
+                            <span class="block text-5xl font-black font-heading text-brand-secondary">5/5</span>
+                            <span class="text-[10px] uppercase tracking-[0.3em] text-brand-muted">Avg. Review Score</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-16 slide-right">
+                    <div class="p-16 glass-card rounded-[4rem] relative">
+                        <span class="absolute top-12 right-12 opacity-10 text-9xl font-black font-heading">"</span>
+                        <p class="text-2xl text-brand-muted italic leading-relaxed mb-10">
+                            "Deep is that rare engineer who understands that design isn't just 'how it looks' but 'how it works.' He took our complex dashboard and turned it into a competitive advantage."
+                        </p>
+                        <div class="flex items-center gap-6">
+                            <div class="w-14 h-14 bg-white/10 rounded-full"></div>
+                            <div>
+                                <h5 class="font-bold text-white text-lg">Sarah Jenkins</h5>
+                                <span class="text-[10px] text-brand-muted uppercase tracking-widest font-black">CTO &bull; CloudFlow USA</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-16 glass-card rounded-[4rem] relative">
+                        <span class="absolute top-12 right-12 opacity-10 text-9xl font-black font-heading">"</span>
+                        <p class="text-2xl text-brand-muted italic leading-relaxed mb-10">
+                            "The performance gains we saw after the transition were staggering. Deep's attention to detail during the Next.js migration was surgical. Highly recommended for any high-scale project."
+                        </p>
+                        <div class="flex items-center gap-6">
+                            <div class="w-14 h-14 bg-white/10 rounded-full"></div>
+                            <div>
+                                <h5 class="font-bold text-white text-lg">Rohan Mehra</h5>
+                                <span class="text-[10px] text-brand-muted uppercase tracking-widest font-black">Founder &bull; SwiftPay India</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detailed FAQ (More Content) -->
+    <section class="py-48">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid lg:grid-cols-12 gap-24">
+                <div class="lg:col-span-5 slide-left">
+                    <div class="sticky top-40">
+                        <h2 class="text-xs font-black uppercase tracking-widest text-brand-accent mb-8">10 // CLARITY</h2>
+                        <h3 class="text-6xl font-heading font-black mb-12">Frequent <br> Interrogations.</h3>
+                        <p class="text-brand-muted text-lg leading-relaxed max-w-sm italic">Transparency is the bedrock of my client relationships. Here are detailed answers to common technical and procedural queries.</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 space-y-16 slide-right">
+                    <div class="space-y-6 border-l-2 border-brand-accent pl-12">
+                        <h4 class="text-4xl font-bold italic">What is the 'Deep' methodology in practice?</h4>
+                        <p class="text-brand-muted leading-relaxed">It's a synthesis of atomic design and performance engineering. We build components that are small, reusable, and optimized for minimal memory overhead. I utilize TypeScript strictly to ensure that the code is self-documenting and virtually bug-free from the start.</p>
+                    </div>
+                    <div class="space-y-6 border-l-2 border-brand-secondary pl-12">
+                        <h4 class="text-4xl font-bold italic">How do you handle technical debt?</h4>
+                        <p class="text-brand-muted leading-relaxed">By preventing it. I favor "Boring Technology" where reliability is proven, combined with modern architectural patterns. Every commit is reviewed against strict performance and security benchmarks. We build for the next five years, not the next five days.</p>
+                    </div>
+                    <div class="space-y-6 border-l-2 border-brand-emerald pl-12">
+                        <h4 class="text-4xl font-bold italic">Why choose a developer based in Gwalior?</h4>
+                        <p class="text-brand-muted leading-relaxed">Because it allows me to offer world-class engineering quality with a perspective of architectural precision inherited from my surroundings. I operate with lower overhead than Silicon Valley agencies while maintaining higher technical standards through focused, deep-work sessions.</p>
+                    </div>
+                    <div class="space-y-6 border-l-2 border-pink-500 pl-12">
+                        <h4 class="text-4xl font-bold italic">Do you offer white-label development?</h4>
+                        <p class="text-brand-muted leading-relaxed">Yes. I frequently partner with creative agencies as their secret technical powerhouse. I can work within your project management tools (Jira, Linear, Asana) and maintain complete anonymity while delivering top-tier code for your clients.</p>
+                    </div>
+                    <div class="space-y-6 border-l-2 border-white pl-12">
+                        <h4 class="text-4xl font-bold italic">What is your project management style?</h4>
+                        <p class="text-brand-muted leading-relaxed">I utilize a "Two-Week Sprint" model. You receive a Loom video update every Friday, and we have a strategic sync call every alternate Tuesday. All progress is tracked in a shared Linear workspace for absolute visibility.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-48 bg-brand-dark">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="max-w-7xl mx-auto glass-card rounded-[5rem] p-16 md:p-32 relative overflow-hidden fade-up">
+                <div class="absolute top-0 right-0 p-16 pointer-events-none opacity-5">
+                    <div class="text-[20vw] font-black leading-none">@</div>
+                </div>
+
+                <div class="grid lg:grid-cols-2 gap-32 relative z-10">
+                    <div class="space-y-20">
+                        <h2 class="text-7xl md:text-9xl font-heading font-black tracking-tighter leading-[0.8]">Let's <br> <span class="text-gradient">Architect.</span></h2>
+                        <div class="space-y-10">
+                            <p class="text-brand-muted text-2xl leading-relaxed">I am currently vetting inquiries for <span class="text-white font-bold italic">Q3 2024</span>. If your brand demands technical excellence and visual precision, let's initiate the conversation.</p>
+                            
+                            <div class="space-y-8">
+                                <a href="mailto:deshdeepdohare@gmail.com?subject=Website%20Contact" class="block text-4xl md:text-2xl font-black hover:text-brand-accent transition-all duration-500 hover:translate-x-4">deshdeepdohare@gmail.com</a>
+                                <p class="text-[10px] uppercase tracking-[0.5em] text-brand-muted font-black">Gwalior, India &bull; Serving the Global Web</p>
+                            </div>
+                        </div>
+
+                        <div class="flex gap-12 border-t border-white/10 pt-16">
+                            <a href="https://www.linkedin.com/in/deshdeepdohare?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="link-hover text-[11px] font-black uppercase tracking-widest">LinkedIn</a>
+                            <a href="#" class="link-hover text-[11px] font-black uppercase tracking-widest">Github</a>
+                            <a href="https://x.com/d38862" class="link-hover text-[11px] font-black uppercase tracking-widest">  X</a>
+                            <a href="https://www.instagram.com/ennuiideep?igsh=MWV5NHR3d2ZjcGxkdQ==" class="link-hover text-[11px] font-black uppercase tracking-widest">Instagram</a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white/[0.03] p-12 md:p-24 rounded-[4rem] border border-white/5 backdrop-blur-3xl shadow-2xl">
+                        <form class="space-y-16" id="contact-form">
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-muted ml-2">Your Identity</label>
+                                <input type="text" placeholder="John Doe" class="w-full bg-transparent border-b-2 border-white/10 py-6 focus:outline-none focus:border-brand-accent transition-all text-2xl font-heading">
+                            </div>
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-muted ml-2">Email Channel</label>
+                                <input type="email" placeholder="john@company.com" class="w-full bg-transparent border-b-2 border-white/10 py-6 focus:outline-none focus:border-brand-accent transition-all text-2xl font-heading">
+                            </div>
+                            <div class="space-y-4">
+                                <label class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-muted ml-2">Project Vision</label>
+                                <textarea rows="4" placeholder="Briefly describe the challenge we are solving..." class="w-full bg-transparent border-b-2 border-white/10 py-6 focus:outline-none focus:border-brand-accent transition-all resize-none text-2xl font-heading leading-relaxed"></textarea>
+                            </div>
+                            <button class="group px-20 py-10 bg-white text-black font-black text-xs uppercase tracking-[0.4em] rounded-[2rem] hover:bg-brand-accent hover:text-white transition-all w-full relative overflow-hidden active:scale-95">
+                                <span class="relative z-10">Initiate Dialogue <span class="inline-block transition-transform group-hover:translate-x-4">→</span></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 border-t border-white/5 text-center">
+        <div class="container mx-auto px-6">
+            <div class="mb-20 flex flex-wrap justify-center gap-16 text-[px] font-black uppercase tracking-[0.4em] text-brand-muted">
+                <a href="#about" class="hover:text-white transition-colors">Manifesto</a>
+                <a href="#experience" class="hover:text-white transition-colors">Journey</a>
+                <a href="#lab" class="hover:text-white transition-colors">Laboratory</a>
+                <a href="#portfolio" class="hover:text-white transition-colors">Archives</a>
+                <a href="#pricing" class="hover:text-white transition-colors">Engagement</a>
+            </div>
+            <p class="text-[px] font-black uppercase tracking-[0.6em] text-brand-muted mb-8">
+                &copy; 2024 DEEP DESIGN SYSTEMS &bull; ARCHITECTED IN GWALIOR.
+            </p>
+            <div class="max-w-4xl mx-auto space-y-4">
+                <p class="text-[px] opacity-10 uppercase tracking-[0.5em] font-light leading-loose">
+                    This platform is a testament to the power of the open web. Built using React semantics / Tailwind CSS architecture / GSAP kinetics / Typography as a first-class citizen &bull; Optimized for the V8 engine and Chromium runtime &bull; Guaranteed sub-500ms TTFB.
+                </p>
+                <div class="flex justify-center gap-4 opacity-5">
+                    <div class="w-3 h-3 bg-white rounded-full"></div>
+                    <div class="w-3 h-3 bg-white rounded-full"></div>
+                    <div class="w-3 h-3 bg-white rounded-full"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Navigation Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-brand-dark z-[200] flex flex-col items-center justify-center gap-12 translate-x-full transition-transform duration-700 lg:hidden">
+        <button id="nav-close" class="absolute top-12 right-12 text-5xl font-light">&times;</button>
+        <a href="#about" class="text-5xl font-heading font-black mobile-link italic">Manifesto</a>
+        <a href="#experience" class="text-5xl font-heading font-black mobile-link italic">Journey</a>
+        <a href="#lab" class="text-5xl font-heading font-black mobile-link italic">Lab</a>
+        <a href="#portfolio" class="text-5xl font-heading font-black mobile-link italic">Archives</a>
+        <a href="#pricing" class="text-5xl font-heading font-black mobile-link italic">Investment</a>
+        <a href="#contact" class="px-14 py-7 bg-white text-black font-black uppercase tracking-[0.4em] text-xs rounded-full">Initiate</a>
+    </div>
+
+    <!-- Animations Setup -->
+    <script>
+        // Initialize GSAP & ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Figma Cursor Implementation
+        const fCursor = document.getElementById('figma-cursor');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(fCursor, {
+                x: e.clientX,
+                y: e.clientY,
+                duration: 0.1,
+                ease: "power1.out"
+            });
+        });
+
+        // Interactive Cursor Styliing
+        const interactables = document.querySelectorAll('a, button, input, textarea, select, .price-card, .timeline-dot');
+        interactables.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(fCursor.querySelector('.cursor-label'), { background: '#a855f7', padding: '6px 16px', duration: 0.3 });
+                gsap.to(fCursor.querySelector('svg path'), { fill: '#a855f7', duration: 0.3 });
+                gsap.to(fCursor.querySelector('svg'), { scale: 1.5, duration: 0.3 });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(fCursor.querySelector('.cursor-label'), { background: '#6366f1', padding: '2px 8px', duration: 0.3 });
+                gsap.to(fCursor.querySelector('svg path'), { fill: '#6366f1', duration: 0.3 });
+                gsap.to(fCursor.querySelector('svg'), { scale: 1, duration: 0.3 });
+            });
+        });
+
+        // Parallax Background Text Logic
+        const parallaxElements = document.querySelectorAll('.parallax-text');
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            parallaxElements.forEach(el => {
+                const speed = el.getAttribute('data-speed');
+                const yPos = -(scrolled * speed / 10);
+                gsap.to(el, { y: yPos, duration: 1, ease: "power1.out" });
+            });
+        });
+
+        // Staggered Tech Stack Reveal
+        gsap.to(".stagger-item", {
+            scrollTrigger: {
+                trigger: "#skills",
+                start: "top 80%",
+            },
+            opacity: 1,
+            scale: 1,
+            duration: 1.2,
+            stagger: 0.1,
+            ease: "power4.out"
+        });
+
+        // Slide Triggers
+        const slideTriggers = [
+            { class: '.slide-left', x: -120 },
+            { class: '.slide-right', x: 120 },
+            { class: '.fade-up', y: 60 }
+        ];
+
+        slideTriggers.forEach(trigger => {
+            document.querySelectorAll(trigger.class).forEach((el) => {
+                gsap.to(el, {
+                    scrollTrigger: {
+                        trigger: el,
+                        start: "top 95%",
+                        toggleActions: "play none none none"
+                    },
+                    x: 0,
+                    y: 0,
+                    opacity: 1,
+                    duration: 1.8,
+                    ease: "expo.out"
+                });
+            });
+        });
+
+        // Navbar Velocity Shrink
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('main-nav');
+            const currentScroll = window.pageYOffset;
+            
+            if (currentScroll > 100) {
+                nav.classList.add('bg-brand-dark/95', 'backdrop-blur-2xl', 'py-6', 'border-b', 'border-white/5');
+            } else {
+                nav.classList.remove('bg-brand-dark/95', 'backdrop-blur-2xl', 'py-6', 'border-b', 'border-white/5');
+            }
+            lastScroll = currentScroll;
+        });
+
+        // Mobile Menu Logic
+        const navToggle = document.getElementById('nav-toggle');
+        const navClose = document.getElementById('nav-close');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        navToggle.addEventListener('click', () => mobileMenu.classList.remove('translate-x-full'));
+        const closeMenu = () => mobileMenu.classList.add('translate-x-full');
+        navClose.addEventListener('click', closeMenu);
+        mobileLinks.forEach(link => link.addEventListener('click', closeMenu));
+
+        // Form Submit Simulation
+        const form = document.getElementById('contact-form');
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const btn = form.querySelector('button');
+            const span = btn.querySelector('span');
+            span.innerHTML = 'ESTABLISHING HANDSHAKE...';
+            gsap.to(btn, { scale: 0.95, duration: 0.1 });
+            
+            setTimeout(() => {
+                span.innerHTML = 'CONNECTION SECURE / MESSAGE SENT';
+                btn.classList.replace('bg-white', 'bg-brand-emerald');
+                btn.classList.add('text-white');
+                gsap.to(btn, { scale: 1, duration: 0.5, ease: "elastic.out(1, 0.3)" });
+                form.reset();
+            }, 2500);
+        });
+    </script>
+</body>
+</html>
